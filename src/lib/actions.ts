@@ -1,32 +1,43 @@
 "use server";
 
 import { db } from "@/db";
-import { User, users as usersTable } from "@/db/schema";
+import { users as usersTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { createServerAction } from "zsa";
+import z from "zod";
+import { permanentRedirect } from "next/navigation";
 
-export type UserInput = Omit<User, "id" | "createdAt" | "updatedAt">;
+const userInput = z.object({
+  id: z.number().optional(),
+  firstName: z.string().min(1, "First name is required").max(50),
+  lastName: z.string().min(1, "Last name is required").max(50),
+  email: z.string().email().min(1, "Email is required"),
+  birthday: z.string().min(1, "Birthday is required"),
+});
 
-export async function createUser(user: UserInput) {
-  return await db
-    .insert(usersTable)
-    .values({
-      ...user,
-      createdAt: new Date(),
-    })
-    .returning();
-}
+export const upsertUser = createServerAction()
+  .input(userInput, { type: "formData" })
+  .handler(async ({ input }) => {
+    const data = {
+      ...input,
+      birthday: new Date(Date.parse(input.birthday)),
+    };
 
-export async function updateUser(id: number, user: UserInput) {
-  return await db
-    .update(usersTable)
-    .set(user)
-    .where(eq(usersTable.id, id))
-    .returning();
-}
+    if (input.id) {
+      await db.update(usersTable).set(data).where(eq(usersTable.id, input.id));
+    } else {
+      await db.insert(usersTable).values(data);
+    }
 
-export async function deleteUser(id: number, path: string) {
-  await db.delete(usersTable).where(eq(usersTable.id, id));
+    revalidatePath("/users");
+    permanentRedirect("/users");
+  });
 
-  revalidatePath(path);
-}
+export const deleteUser = createServerAction()
+  .input(z.number())
+  .handler(async ({ input }) => {
+    await db.delete(usersTable).where(eq(usersTable.id, input));
+
+    revalidatePath("/users");
+  });

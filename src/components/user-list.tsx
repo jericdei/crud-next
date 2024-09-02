@@ -20,7 +20,7 @@ export default function UserList({ users }: UserListProps) {
   const deleteUser = async () => {
     if (!selectedUser) return;
 
-    await deleteUserAction(selectedUser, "/users");
+    await deleteUserAction(selectedUser);
 
     toast({
       title: "Success!",

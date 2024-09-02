@@ -1,12 +1,10 @@
 import Paginator from "@/components/paginator";
 import { Button } from "@/components/ui/button";
-import UserAlertDialog from "@/components/user-alert-dialog";
-import UserCard from "@/components/user-card";
 import UserLayout from "@/components/user-layout";
 import UserList from "@/components/user-list";
 import { db } from "@/db";
 import { users as usersTable } from "@/db/schema";
-import { count } from "drizzle-orm";
+import { count, desc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -27,6 +25,7 @@ export default async function UsersPage({
     .select()
     .from(usersTable)
     .limit(PER_PAGE)
+    .orderBy(desc(usersTable.id))
     .offset(searchParams ? (parseInt(searchParams.page) - 1) * PER_PAGE : 0);
 
   return (
