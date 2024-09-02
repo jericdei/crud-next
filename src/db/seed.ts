@@ -10,6 +10,7 @@ async function main() {
     const bday = faker.date.birthdate({ min: 18, max: 65 });
 
     data.push({
+      id: faker.database.mongodbObjectId(),
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),

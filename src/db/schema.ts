@@ -1,8 +1,8 @@
-import { sql } from "drizzle-orm";
+import { InferInsertModel, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
-  id: text("id"),
+  id: text("id").notNull().primaryKey(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
@@ -11,6 +11,8 @@ export const users = sqliteTable("users", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
   updatedAt: integer("updated_at", { mode: "timestamp" }).default(
-    sql`CURRENT_TIMESTAMP`
+    sql`CURRENT_TIMESTAMP`,
   ),
 });
+
+export type User = InferInsertModel<typeof users>;

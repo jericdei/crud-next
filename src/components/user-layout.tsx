@@ -13,9 +13,12 @@ export default function UserLayout({
   ...props
 }: UserLayoutProps) {
   return (
-    <main {...props}>
+    <main
+      className="container mx-auto px-8 py-16"
+      {...props}
+    >
       <div className="flex justify-between">
-        <h1 className="text-3xl font-bold mb-4">{title}</h1>
+        <h1 className="mb-4 text-3xl font-bold">{title}</h1>
 
         {actions}
       </div>
