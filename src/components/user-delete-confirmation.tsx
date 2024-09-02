@@ -16,7 +16,7 @@ import { AlertDialogProps } from "@radix-ui/react-alert-dialog";
 interface UserAlertDialogProps extends AlertDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onConfirm?: () => void;
+  onConfirm?: () => Promise<void>;
 }
 
 export default function UserDeleteConfirmation({

@@ -4,17 +4,28 @@ import { User } from "@/db/schema";
 import UserCard from "./user-card";
 import UserDeleteConfirmation from "./user-delete-confirmation";
 import { useState } from "react";
+import { deleteUser as deleteUserAction } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserListProps {
   users: User[];
 }
 
 export default function UserList({ users }: UserListProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<string | undefined>();
+  const { toast } = useToast();
 
-  const deleteUser = () => {
-    console.log("delete", selectedUser);
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<number | undefined>();
+
+  const deleteUser = async () => {
+    if (!selectedUser) return;
+
+    await deleteUserAction(selectedUser, "/users");
+
+    toast({
+      title: "Success!",
+      description: "User was deleted successfully",
+    });
   };
 
   return (
@@ -24,7 +35,7 @@ export default function UserList({ users }: UserListProps) {
           <UserCard
             key={user.id}
             user={user}
-            onDelete={() => {
+            onDelete={async () => {
               setSelectedUser(user.id);
               setOpen(true);
             }}

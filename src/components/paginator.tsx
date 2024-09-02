@@ -23,33 +23,43 @@ export default function Paginator({ total, perPage }: PaginatorProps) {
   const pageCount = Math.ceil(total / perPage);
 
   return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            disabled={currentPage === 1}
-            href={`?page=${currentPage - 1}`}
-          />
-        </PaginationItem>
+    <div className="flex items-center justify-between">
+      <div>
+        <small>
+          Showing {perPage * (currentPage - 1) + 1} to{" "}
+          {currentPage === pageCount ? total : perPage * currentPage} of {total}{" "}
+          results
+        </small>
+      </div>
 
-        {[...Array(pageCount)].map((_, index) => (
-          <PaginationItem key={index}>
-            <PaginationLink
-              href={`?page=${index + 1}`}
-              isActive={currentPage === index + 1}
-            >
-              {index + 1}
-            </PaginationLink>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              disabled={currentPage === 1}
+              href={`?page=${currentPage - 1}`}
+            />
           </PaginationItem>
-        ))}
 
-        <PaginationItem>
-          <PaginationNext
-            disabled={currentPage === pageCount}
-            href={`?page=${currentPage + 1}`}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+          {[...Array(pageCount)].map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink
+                href={`?page=${index + 1}`}
+                isActive={currentPage === index + 1}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              disabled={currentPage === pageCount}
+              href={`?page=${currentPage + 1}`}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 }
