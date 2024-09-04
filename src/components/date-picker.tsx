@@ -16,10 +16,14 @@ import { InputHTMLAttributes, useState } from "react";
 interface DatePickerProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 export default function DatePicker(props: DatePickerProps) {
+  const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>();
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+    >
       <PopoverTrigger asChild>
         <div className="relative">
           <Input
@@ -42,7 +46,10 @@ export default function DatePicker(props: DatePickerProps) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(date) => {
+            setDate(date);
+            setOpen(false);
+          }}
           initialFocus
         />
       </PopoverContent>
